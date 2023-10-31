@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RSS Parser</title>
+</head>
+<body>
+    <h1>test rss feed parsr with fetch</h1>
+    <script>
+        fetch("https://blog.angular.io/feed")
+        .then(res => res.text())
+        .then(str => new window.DOMParser().parseFromString(str, "text/xml"))
+        .then(data => {
+            const items = data.querySelectorAll("item")
+            let article = ``
+            console.log(items)
+            items.forEach((item) => {
+                console.log(item);
+                article += `
+                        <article>
+                            <img src="${item.querySelector("link").textContent}/image/large.png" alt="">
+                            <h2>${item.querySelector("title").textContent}</h2>
+                            <p>${item.getElementsByTagNameNS("*", "encoded").item(0).textContent}</p>
+                        </article>
+                    `;
+            }) 
+            document.body.insertAdjacentHTML("beforeend", article);
+        })
+    </script>
+    <style>
+        body, html {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        article {
+            width: 50vw;
+        }
+    </style>
+</body>
+</html>
